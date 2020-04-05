@@ -18,7 +18,6 @@ include_directories(${OPENGL_INCLUDE_DIRS} include)
 add_executable(
     ${PROJECT_NAME}
     src/main.cpp
-    src/glad.c
 )
 
 # Target libraries
