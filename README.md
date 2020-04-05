@@ -9,3 +9,4 @@ The OpenGL series from The Cherno.
 1. [Vertex Attributes and Layouts in OpenGL](https://youtu.be/x0H--CL2tUI)
 1. [How Shaders Work in OpenGL](https://youtu.be/5W7JLgFCkwI)
 1. [Writing a Shader in OpenGL](https://youtu.be/71BLZwRGUJE)
+1. [How I Deal with Shaders in OpenGL](https://youtu.be/2pv0Fbo-7ms)
