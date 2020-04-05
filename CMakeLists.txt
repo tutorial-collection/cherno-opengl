@@ -23,4 +23,4 @@ add_executable(
 
 # Target libraries
 # target_link_libraries(${PROJECT_NAME} ...)
- target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} glfw3)
+ target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} glfw3 glew32s)
