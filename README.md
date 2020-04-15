@@ -13,3 +13,4 @@ The OpenGL series from The Cherno.
 1. [Index Buffers in OpenGL](https://youtu.be/MXNMC1YAxVQ)
 1. [Dealing with Errors in OpenGL](https://youtu.be/FBbPWSOQ0-w)
 1. [Uniforms in OpenGL](https://youtu.be/DE6Xlx_kbo0)
+1. [Vertex Arrays in OpenGL](https://youtu.be/Bcs56Mm-FJY)
