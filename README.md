@@ -10,3 +10,4 @@ The OpenGL series from The Cherno.
 1. [How Shaders Work in OpenGL](https://youtu.be/5W7JLgFCkwI)
 1. [Writing a Shader in OpenGL](https://youtu.be/71BLZwRGUJE)
 1. [How I Deal with Shaders in OpenGL](https://youtu.be/2pv0Fbo-7ms)
+1. [Index Buffers in OpenGL](https://youtu.be/MXNMC1YAxVQ)

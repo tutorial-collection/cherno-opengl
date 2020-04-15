@@ -139,16 +139,21 @@ int main() {
     std::cout << glGetString(GL_VERSION) << std::endl;
 
     /* Initialize vertex buffer */
-    float trianglePositions[6] {
+    float trianglePositions[] {
+        // First triangle
         -0.5f, -0.5f,
-         0.0f,  0.5f,
-         0.5f, -0.5f
+        0.5f, -0.5f,
+        0.5f, 0.5f,
+        // Second triangle
+        0.5f, 0.5f,
+        -0.5f, 0.5f,
+        -0.5f, -0.5f,
     };
 
     unsigned int buffer;
     glGenBuffers(1, &buffer); // Create one buffer with the address of buffer
     glBindBuffer(GL_ARRAY_BUFFER, buffer); // Binds the buffer as the current used buffer
-    glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), trianglePositions, GL_STATIC_DRAW); // Set the data of the buffer
+    glBufferData(GL_ARRAY_BUFFER, 6 * 2 * sizeof(float), trianglePositions, GL_STATIC_DRAW); // Set the data of the buffer
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), nullptr); // Setup the layout of the triangle positions
@@ -166,7 +171,7 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT);
 
         /* Modern OpenGL triangle with shaders */
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
