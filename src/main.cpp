@@ -13,104 +13,12 @@
 #include "IndexBuffer.h"
 #include "VertexArray.h"
 #include "VertexBufferLayout.h"
-
+#include "Shader.h"
 
 
 // Constants
 const GLuint WIDTH = 800;
 const GLuint HEIGHT = 600;
-
-struct ShaderProgramSource {
-    std::string VertexSource;
-    std::string FragmentSource;
-};
-
-
-static ShaderProgramSource ParseShader(const std::string &filePath) {
-    std::ifstream stream(filePath);
-
-    enum class ShaderType {
-        NONE = -1,
-        VERTEX = 0,
-        FRAGMENT = 1
-    };
-
-    std::string line;
-    std::stringstream ss[2];
-    ShaderType type = ShaderType::NONE;
-
-    while (getline(stream, line)) {
-        // If is is a shader define
-        if (line.find("#shader") != std::string::npos) {
-            if (line.find("vertex") != std::string::npos) {
-                type = ShaderType::VERTEX;
-            } else if (line.find("fragment") != std::string::npos) {
-                type = ShaderType::FRAGMENT;
-            }
-        } else {
-            ss[(int) type] << line << '\n';
-        }
-    }
-
-    return {ss[0].str(), ss[1].str()};
-}
-
-
-/**
- * Compile a single shader.
- * @param type The type of the shader.
- * @param shader The shader in string format.
- * @return The shader id.
- */
-static unsigned int CompileShader(unsigned int type, const std::string &shader) {
-    unsigned int shaderId = glCreateShader(type);
-    const char *shaderCString = shader.c_str();
-
-    glShaderSource(shaderId, 1, &shaderCString, nullptr);
-    glCompileShader(shaderId);
-
-    // Error handling
-    int result;
-    glGetShaderiv(shaderId, GL_COMPILE_STATUS, &result);
-    if (!result) {
-        int length;
-        glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &length);
-
-        char *message = (char *) alloca(length * sizeof(char));
-        glGetShaderInfoLog(shaderId, length, &length, message);
-        std::cout << "Failed to compile " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << "shader"
-                  << std::endl;
-        std::cout << message << std::endl;
-
-        glDeleteShader(shaderId);
-        return 0;
-    }
-
-    return shaderId;
-}
-
-/**
- * Create a shader by it's vertex- and fragmentShaders.
- * @param vertexShader The vertex shader.
- * @param fragmentShader The fragment shader.
- * @return The shader id.
- */
-static unsigned int CreateShader(const std::string &vertexShader, const std::string &fragmentShader) {
-    unsigned int program{glCreateProgram()};
-    unsigned int vShader{CompileShader(GL_VERTEX_SHADER, vertexShader)};
-    unsigned int fShader{CompileShader(GL_FRAGMENT_SHADER, fragmentShader)};
-
-    glAttachShader(program, vShader);
-    glAttachShader(program, fShader);
-    glLinkProgram(program);
-    glValidateProgram(program);
-
-    // Delete the shaders, you can do this because they are now linked into a program.
-    glDeleteShader(vShader);
-    glDeleteShader(fShader);
-
-    return program;
-}
 
 
 /**
@@ -168,8 +76,8 @@ int main() {
     // Second draw a triangle with Vertexes 3, 4, 1
     // This forms a square
     unsigned int indices[]{
-            0, 1, 2,
-            2, 3, 0
+        0, 1, 2,
+        2, 3, 0
     };
 
 
@@ -183,26 +91,14 @@ int main() {
     IndexBuffer triangleIndexBuffer{indices, 6};
 
 
-    /* Creating shader */
-    // Relative path from the /build folder where the exe lives.
-    ShaderProgramSource source = ParseShader("../res/shaders/Basic.shader");
-
-    unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
-    glUseProgram(shader);
+    Shader shader{"../res/shaders/Basic.shader"};
+    shader.bind();
+    shader.setUniform4f("u_Color", 0.2f, 0.3f, 0.8f, 1.0f);
 
 
-    // Uniforms
-    // Uniforms are set per draw
-
-    // Uniform with 4 floats (vec4 in shader)
-    int location = glGetUniformLocation(shader, "u_Color");
-    ASSERT(location != -1, "Invalid uniform id");
-    glUniform4f(location, 0.2f, 0.3f, 0.8f, 1.0f);
-
-
-    // Unbind vao's, shaders, buffers, index buffers.
+    // Unbind all
     vao.unBind();
-    glUseProgram(0);
+    shader.unBind();
     triangleBuffer.unBind();
     triangleIndexBuffer.unBind();
 
@@ -227,8 +123,8 @@ int main() {
 
 
         // Bind shader, buffer and index buffer
-        glUseProgram(shader);
-        glUniform4f(location, r, 0.3f, 0.8f, 1.0f); // Uniform can be set after the shader is bound.
+        shader.bind();
+        shader.setUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
         vao.bind();
         triangleIndexBuffer.bind();
 
@@ -255,8 +151,6 @@ int main() {
             std::cout << "60 frames: " << frame / 60 << std::endl;
         ++frame;
     }
-
-    glDeleteProgram(shader);
 
     glfwTerminate();
     return 0;

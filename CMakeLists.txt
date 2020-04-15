@@ -24,7 +24,7 @@ add_executable(
     src/IndexBuffer.cpp src/IndexBuffer.h
     src/VertexArray.cpp src/VertexArray.h
     src/VertexBufferLayout.h
-)
+        src/Shader.cpp src/Shader.h)
 
 # Target libraries
 # target_link_libraries(${PROJECT_NAME} ...)
