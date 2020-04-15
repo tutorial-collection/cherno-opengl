@@ -9,6 +9,10 @@
 
 #include "error.h"
 #include "Renderer.h"
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
+
+
 
 // Constants
 const GLuint WIDTH = 800;
@@ -18,7 +22,6 @@ struct ShaderProgramSource {
     std::string VertexSource;
     std::string FragmentSource;
 };
-
 
 
 static ShaderProgramSource ParseShader(const std::string &filePath) {
@@ -175,10 +178,7 @@ int main() {
 
 
     // Buffer
-    unsigned int buffer;
-    glGenBuffers(1, &buffer); // Create one buffer with the address of buffer
-    glBindBuffer(GL_ARRAY_BUFFER, buffer); // Binds the buffer as the current used buffer
-    glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), trianglePositions, GL_STATIC_DRAW); // Set the data of the buffer
+    VertexBuffer triangleBuffer{trianglePositions, 4 * 2 * sizeof(float)};
 
     // Specify the layout of the array buffer (first bind the buffer, see above)
     glEnableVertexAttribArray(0); // Index 0
@@ -186,10 +186,7 @@ int main() {
 
 
     // Index buffer
-    unsigned int ibo; // Index buffer object
-    glGenBuffers(1, &ibo); // Create one buffer for the index buffer object
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo); // Binds the buffer as the current used buffer, element array buffer
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW); // Set the data of the buffer
+    IndexBuffer triangleIndexBuffer{indices, 6};
 
 
     /* Creating shader */
@@ -212,8 +209,8 @@ int main() {
     // Unbind vao's, shaders, buffers, index buffers.
     glBindVertexArray(0);
     glUseProgram(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    triangleBuffer.unBind();
+    triangleIndexBuffer.unBind();
 
 
     // Animated colors
@@ -239,7 +236,7 @@ int main() {
         glUseProgram(shader);
         glUniform4f(location, r, 0.3f, 0.8f, 1.0f); // Uniform can be set after the shader is bound.
         glBindVertexArray(vao);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+        triangleIndexBuffer.bind();
 
         // Draw call
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr); // Count of indices, buffer is already bound
