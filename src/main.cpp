@@ -6,6 +6,11 @@
 #include <string>
 #include <sstream>
 
+// Macro's
+#define ASSERT(x) if (!(x)) __debugbreak();
+#define GLCall(x) GLClearErrors();\
+    x;\
+    ASSERT(GLLogCall(#x, __FILE__, __LINE__));
 
 // Constants
 const GLuint WIDTH = 800;
@@ -15,6 +20,20 @@ struct ShaderProgramSource {
     std::string VertexSource;
     std::string FragmentSource;
 };
+
+
+// Error handling
+static void GLClearErrors() {
+    while (glGetError() != GL_NO_ERROR);
+}
+
+static bool GLLogCall(const char* function, const char* file, int line) {
+    while(GLenum error = glGetError()) {
+        std::cout << "[OpenGL Error]: " << error << " " << function << " " << file << ":" << line << std::endl;
+        return false;
+    }
+    return true;
+}
 
 
 static ShaderProgramSource ParseShader(const std::string& filePath) {
@@ -193,7 +212,8 @@ int main() {
 
         /* Modern OpenGL triangle with shaders */
         // glDrawArrays(GL_TRIANGLES, 0, 6); // From triangle 0 to 6!
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr); // Count of indices, buffer is already bound
+        GLCall(glDrawElements(GL_TRIANGLES, 6, GL_INT, nullptr)); // Count of indices, buffer is already bound
+
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
