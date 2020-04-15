@@ -141,22 +141,43 @@ int main() {
     /* Initialize vertex buffer */
     float trianglePositions[] {
         // First triangle
-        -0.5f, -0.5f,
-        0.5f, -0.5f,
-        0.5f, 0.5f,
+        -0.5f, -0.5f, // Vertex 1
+        0.5f, -0.5f, // Vertex 2
+        0.5f, 0.5f, // Vertex 3
         // Second triangle
-        0.5f, 0.5f,
-        -0.5f, 0.5f,
-        -0.5f, -0.5f,
+        // 0.5f, 0.5f, Duplicate
+        -0.5f, 0.5f, // Vertex 4
+        // -0.5f, -0.5f, Duplicate
     };
 
+
+    // Indexes
+    // First draw a triangle with Vertexes 1, 2, 3
+    // Second draw a triangle with Vertexes 3, 4, 1
+    // This forms a square
+    unsigned int indices[]{
+        0, 1, 2,
+        2, 3, 0
+    };
+
+
+    // Buffer
     unsigned int buffer;
     glGenBuffers(1, &buffer); // Create one buffer with the address of buffer
     glBindBuffer(GL_ARRAY_BUFFER, buffer); // Binds the buffer as the current used buffer
     glBufferData(GL_ARRAY_BUFFER, 6 * 2 * sizeof(float), trianglePositions, GL_STATIC_DRAW); // Set the data of the buffer
 
+
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), nullptr); // Setup the layout of the triangle positions
+
+
+    // Index buffer
+    unsigned int ibo; // Index buffer object
+    glGenBuffers(1, &ibo); // Create one buffer for the index buffer object
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo); // Binds the buffer as the current used buffer, element array buffer
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW); // Set the data of the buffer
+
 
     /* Creating shader */
     // Relative path from the /build folder where the exe lives.
@@ -171,7 +192,8 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT);
 
         /* Modern OpenGL triangle with shaders */
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        // glDrawArrays(GL_TRIANGLES, 0, 6); // From triangle 0 to 6!
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr); // Count of indices, buffer is already bound
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
