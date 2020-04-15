@@ -161,14 +161,10 @@ int main() {
 
     /* Initialize vertex buffer */
     float trianglePositions[]{
-            // First triangle
-            -0.5f, -0.5f, // Vertex 1
-            0.5f, -0.5f, // Vertex 2
-            0.5f, 0.5f, // Vertex 3
-            // Second triangle
-            // 0.5f, 0.5f, Duplicate
-            -0.5f, 0.5f, // Vertex 4
-            // -0.5f, -0.5f, Duplicate
+        -0.5f, -0.5f, // Vertex 1
+        0.5f, -0.5f, // Vertex 2
+        0.5f, 0.5f, // Vertex 3
+        -0.5f, 0.5f, // Vertex 4
     };
 
 
@@ -182,14 +178,20 @@ int main() {
     };
 
 
+    // Vertex array object
+    unsigned int vao;
+    glGenVertexArrays(1, &vao); // Generate vertex array
+    glBindVertexArray(vao);
+
+
     // Buffer
     unsigned int buffer;
     glGenBuffers(1, &buffer); // Create one buffer with the address of buffer
     glBindBuffer(GL_ARRAY_BUFFER, buffer); // Binds the buffer as the current used buffer
-    glBufferData(GL_ARRAY_BUFFER, 6 * 2 * sizeof(float), trianglePositions, GL_STATIC_DRAW); // Set the data of the buffer
+    glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), trianglePositions, GL_STATIC_DRAW); // Set the data of the buffer
 
-
-    glEnableVertexAttribArray(0);
+    // Specify the layout of the array buffer (first bind the buffer, see above)
+    glEnableVertexAttribArray(0); // Index 0
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), nullptr); // Setup the layout of the triangle positions
 
 
@@ -213,8 +215,16 @@ int main() {
 
     // Uniform with 4 floats (vec4 in shader)
     int location = glGetUniformLocation(shader, "u_Color");
-    ASSERT(location != -1, "Skuuu");
+    ASSERT(location != -1, "Invalid uniform id");
     glUniform4f(location, 0.2f, 0.3f, 0.8f, 1.0f);
+
+
+    // Unbind vao's, shaders, buffers, index buffers.
+    glBindVertexArray(0);
+    glUseProgram(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
 
     // Animated colors
     float r = 0.0f;
@@ -234,15 +244,14 @@ int main() {
         /* Modern OpenGL triangle with shaders */
         // glDrawArrays(GL_TRIANGLES, 0, 6); // From triangle 0 to 6!
 
-        // Animate color
-        if (r > 1.0f)
-            rIncrement = -0.05f;
-        if (r < 0.0f)
-            rIncrement = 0.05f;
 
-        r += rIncrement;
+        // Bind shader, buffer and index buffer
+        glUseProgram(shader);
+        glUniform4f(location, r, 0.3f, 0.8f, 1.0f); // Uniform can be set after the shader is bound.
+        glBindVertexArray(vao);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 
-        glUniform4f(location, r, 0.3f, 0.8f, 1.0f);
+        // Draw call
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr); // Count of indices, buffer is already bound
 
 
@@ -252,6 +261,15 @@ int main() {
         /* Poll for and process events */
         glfwPollEvents();
 
+        // Animate color
+        if (r > 1.0f)
+            rIncrement = -0.05f;
+        if (r < 0.0f)
+            rIncrement = 0.05f;
+
+        r += rIncrement;
+
+        // Frame counter
         if (frame % 60 == 0)
             std::cout << "60 frames: " << frame / 60 << std::endl;
         ++frame;
