@@ -11,6 +11,8 @@
 #include "Renderer.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
+#include "VertexArray.h"
+#include "VertexBufferLayout.h"
 
 
 
@@ -171,21 +173,13 @@ int main() {
     };
 
 
-    // Vertex array object
-    unsigned int vao;
-    glGenVertexArrays(1, &vao); // Generate vertex array
-    glBindVertexArray(vao);
-
-
-    // Buffer
+    VertexArray vao{};
     VertexBuffer triangleBuffer{trianglePositions, 4 * 2 * sizeof(float)};
 
-    // Specify the layout of the array buffer (first bind the buffer, see above)
-    glEnableVertexAttribArray(0); // Index 0
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), nullptr); // Setup the layout of the triangle positions
+    VertexBufferLayout triangleLayout{};
+    triangleLayout.push<float>(2);
+    vao.addBuffer(triangleBuffer, triangleLayout);
 
-
-    // Index buffer
     IndexBuffer triangleIndexBuffer{indices, 6};
 
 
@@ -235,7 +229,7 @@ int main() {
         // Bind shader, buffer and index buffer
         glUseProgram(shader);
         glUniform4f(location, r, 0.3f, 0.8f, 1.0f); // Uniform can be set after the shader is bound.
-        glBindVertexArray(vao);
+        vao.bind();
         triangleIndexBuffer.bind();
 
         // Draw call

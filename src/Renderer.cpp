@@ -34,6 +34,15 @@ void GLAPIENTRY Renderer::debugCallbackMessage(
             << "GL ERROR CALLBACK: " << (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "") << std::endl
             << "GL ERROR MESSAGE: " << message << std::endl;
 
+//    std::cerr
+//        << source << std::endl
+//        << type << std::endl
+//        << severity << std::endl
+//        << length << std::endl
+//        << id << std::endl
+//        << userParam << std::endl;
+
+
     STOP("OpenGL Error");
 }
 
