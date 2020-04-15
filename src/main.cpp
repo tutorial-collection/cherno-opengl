@@ -201,7 +201,7 @@ int main() {
 
 
     // Unbind vao's, shaders, buffers, index buffers.
-    glBindVertexArray(0);
+    vao.unBind();
     glUseProgram(0);
     triangleBuffer.unBind();
     triangleIndexBuffer.unBind();

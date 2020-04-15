@@ -16,3 +16,4 @@ The OpenGL series from The Cherno.
 1. [Vertex Arrays in OpenGL](https://youtu.be/Bcs56Mm-FJY)
 1. [Abstracting OpenGL into Classes](https://youtu.be/bTHqmzjm2UI)
 1. [Buffer Layout Abstraction in OpenGL](https://youtu.be/oD1dvfbyf6A)
+1. [Shader Abstraction in OpenGL](https://youtu.be/gDtHL6hy9R8)
