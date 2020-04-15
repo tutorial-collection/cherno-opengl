@@ -16,13 +16,17 @@ Shader::~Shader() {
     glDeleteProgram(this->m_rendererID);
 }
 
-int Shader::getUniformLocation(const std::string &name){
+int Shader::getUniformLocation(const std::string &name) {
+    if (this->m_locationCache.find(name) != this->m_locationCache.end())
+        return this->m_locationCache[name];
+
     int location =  glGetUniformLocation(this->m_rendererID, name.c_str());
 
     if (location == -1) {
         std::cout << "@Shader.cpp: WARNING: Uniform " << name << " doesn't exist.";
     }
 
+    this->m_locationCache[name] = location;
     return location;
 }
 

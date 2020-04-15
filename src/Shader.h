@@ -3,6 +3,7 @@
 
 #include <GL/glew.h>
 #include <string>
+#include <unordered_map>
 
 
 struct ShaderProgramSource {
@@ -15,6 +16,7 @@ class Shader {
 private:
     unsigned int m_rendererID;
     std::string m_filePath;
+    std::unordered_map<std::string, unsigned int> m_locationCache;
 
     // Uniform
     int getUniformLocation(const std::string &name);
