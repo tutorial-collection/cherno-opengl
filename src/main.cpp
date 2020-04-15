@@ -7,8 +7,8 @@
 #include <string>
 #include <sstream>
 
-// Macro's
-#define ASSERT(x, message) if (!(x)) {std::cout << "ASSERTING " << #x << " with message: " << message << std::endl; __debugbreak();}
+#include "error.h"
+#include "Renderer.h"
 
 // Constants
 const GLuint WIDTH = 800;
@@ -19,15 +19,6 @@ struct ShaderProgramSource {
     std::string FragmentSource;
 };
 
-
-// Error handling
-static void GLAPIENTRY GLErrorMessage(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam) {
-    std::cerr
-        << "GL ERROR CALLBACK: " << (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "") << std::endl
-        << "GL ERROR MESSAGE: " << message << std::endl;
-
-    ASSERT(false, "OpenGL Error");
-}
 
 
 static ShaderProgramSource ParseShader(const std::string &filePath) {
@@ -155,8 +146,7 @@ int main() {
     std::cout << glGetString(GL_VERSION) << std::endl;
 
     // Init error handling
-    glEnable(GL_DEBUG_OUTPUT);
-    glDebugMessageCallback(GLErrorMessage, nullptr);
+    Renderer::enableDebugCallback();
 
 
     /* Initialize vertex buffer */

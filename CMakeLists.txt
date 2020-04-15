@@ -18,8 +18,12 @@ include_directories(${OPENGL_INCLUDE_DIRS} include)
 add_executable(
     ${PROJECT_NAME}
     src/main.cpp
+    src/error.h
+    src/Renderer.cpp src/Renderer.h
+    src/VertexBuffer.cpp src/VertexBuffer.h
+    src/IndexBuffer.cpp src/IndexBuffer.h
 )
 
 # Target libraries
 # target_link_libraries(${PROJECT_NAME} ...)
- target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} glfw3 glew32s)
+target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} glfw3 glew32s)
