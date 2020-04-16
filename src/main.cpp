@@ -3,17 +3,9 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
-#include <fstream>
-#include <string>
-#include <sstream>
 
-#include "error.h"
-#include "Renderer.h"
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
-#include "VertexArray.h"
-#include "VertexBufferLayout.h"
-#include "Shader.h"
+#include "engine/Renderer.h"
+#include "utils/RGBA.h"
 
 
 // Constants
@@ -102,34 +94,23 @@ int main() {
     triangleBuffer.unBind();
     triangleIndexBuffer.unBind();
 
+    // Colors
+    RGBA rgba{0.0f, 0.3f, 0.8f, 1.0f};
 
-    // Animated colors
-    float r = 0.0f;
-    float g = 0.8f;
-    float b = 0.8f;
-
+    Renderer renderer{};
     float rIncrement = 0.05f;
-
     unsigned int frame = 0;
 
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
         /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT);
+        renderer.clear();
 
-        /* Modern OpenGL triangle with shaders */
-        // glDrawArrays(GL_TRIANGLES, 0, 6); // From triangle 0 to 6!
-
-
-        // Bind shader, buffer and index buffer
         shader.bind();
-        shader.setUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
-        vao.bind();
-        triangleIndexBuffer.bind();
+        shader.setUniform4f("u_Color", rgba.getGLR(), rgba.getGLG(), rgba.getGLB(), rgba.getGLA());
 
-        // Draw call
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr); // Count of indices, buffer is already bound
+        renderer.draw(vao, triangleIndexBuffer, shader);
 
 
         /* Swap front and back buffers */
@@ -138,17 +119,17 @@ int main() {
         /* Poll for and process events */
         glfwPollEvents();
 
-        // Animate color
-        if (r > 1.0f)
-            rIncrement = -0.05f;
-        if (r < 0.0f)
-            rIncrement = 0.05f;
 
-        r += rIncrement;
+        // Animate color
+        if (rgba.getGLR() > 1.0f) rIncrement = -0.05f;
+        if (rgba.getGLR() < 0.0f) rIncrement = 0.05f;
+        rgba.setR( rgba.getGLR() + rIncrement );
+
 
         // Frame counter
-        if (frame % 60 == 0)
+        if (frame % 60 == 0) {
             std::cout << "60 frames: " << frame / 60 << std::endl;
+        }
         ++frame;
     }
 

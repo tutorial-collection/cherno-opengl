@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <GL/glew.h>
-#include "error.h"
+#include "../error/error.h"
 
 
 struct VertexBufferLayoutElement {
