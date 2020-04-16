@@ -64,10 +64,10 @@ int main() {
 
     /* Initialize vertex buffer */
     float trianglePositions[]{
-        100.0f, 100.0f, 0.0f, 0.0f, // Vertex 1
-        500.0f, 100.0f, 1.0f, 0.0f, // Vertex 2
-        500.0f, 500.0f, 1.0f, 1.0f, // Vertex 3
-        100.0f, 500.0f, 0.0f, 1.0f // Vertex 4
+        -50.0f, -50.0f, 0.0f, 0.0f, // Vertex 1
+        50.0f, -50.0f, 1.0f, 0.0f, // Vertex 2
+        50.0f, 50.0f, 1.0f, 1.0f, // Vertex 3
+        -50.0f, 50.0f, 0.0f, 1.0f // Vertex 4
     };
 
 
@@ -99,16 +99,17 @@ int main() {
 
     // Projection matrix
     glm::mat4 projectionMatrix{glm::ortho(0.0f, (float)WIDTH, 0.0f, (float)HEIGHT, -1.0f, 1.0f)};
-    glm::vec4 vertexPositions{100.0f, 100.0f, 0.0f, 1.0f};
+    glm::vec4 vertexPositions{0.0f, 0.0f, 0.0f, 1.0f};
     // glm::vec4 result{projectionMatrix * vertexPositions};
 
     // View matrix
-    glm::mat4 viewMatrix{ glm::translate(glm::mat4{1.0f}, glm::vec3(100.0f, 0.0f, 0.0f)) };
+    glm::mat4 viewMatrix{ glm::translate(glm::mat4{1.0f}, glm::vec3(0.0f, 0.0f, 0.0f)) };
 
 
     Shader shader{"../res/shaders/Basic.shader"};
     shader.bind();
     shader.setUniform4f("u_Color", 0.2f, 0.3f, 0.8f, 1.0f);
+//    shader.setUniform4f("u_Color", rgba.getGLR(), rgba.getGLG(), rgba.getGLB(), rgba.getGLA());
 
 
     Texture texture{"../res/textures/brick0.jpg"};
@@ -124,9 +125,10 @@ int main() {
 
     // Colors
     RGBA rgba{0.0f, 0.3f, 0.8f, 1.0f};
+    float rIncrement = 0.05f;
+
 
     Renderer renderer{};
-    float rIncrement = 0.05f;
 
 
     // IM GUI
@@ -135,7 +137,8 @@ int main() {
     ImGui::StyleColorsDark();
 
     // Translation
-    glm::vec3 modelTranslation{200, 200, 0};
+    glm::vec3 modelTranslationA{200, 200, 0};
+    glm::vec3 modelTranslationB{200, 200, 0};
 
 
     /* Loop until the user closes the window */
@@ -146,20 +149,21 @@ int main() {
         /* IM GUI Code */
         ImGui_ImplGlfwGL3_NewFrame();
         {
-            ImGui::SliderFloat3("Model Translate", &modelTranslation.x, 0, 100);
+            ImGui::SliderFloat3("Model Translate", &modelTranslationA.x, 0, 100);
         }
 
 
         // Render
-        // Model matrix
-        glm::mat4 modelMatrix{ glm::translate(glm::mat4{1.0f}, modelTranslation) };
-        // MVP matrix
-        glm::mat4 mvpMatrix{projectionMatrix * viewMatrix * modelMatrix};
+        glm::mat4 modelMatrix{ glm::translate(glm::mat4{1.0f}, modelTranslationA) };
 
         shader.bind();
-        shader.setUniform4f("u_Color", rgba.getGLR(), rgba.getGLG(), rgba.getGLB(), rgba.getGLA());
-        shader.setUniformMat4f("u_MVP", mvpMatrix);
 
+        glm::mat4 mvpMatrix{projectionMatrix * viewMatrix * modelMatrix};
+        shader.setUniformMat4f("u_MVP", mvpMatrix);
+        renderer.draw(vao, triangleIndexBuffer, shader);
+
+        mvpMatrix = projectionMatrix * viewMatrix * glm::translate(glm::mat4{1.0f}, modelTranslationB);
+        shader.setUniformMat4f("u_MVP", mvpMatrix);
         renderer.draw(vao, triangleIndexBuffer, shader);
 
 
@@ -176,9 +180,9 @@ int main() {
 
 
         // Animate color
-        if (rgba.getGLR() > 1.0f) rIncrement = -0.05f;
-        if (rgba.getGLR() < 0.0f) rIncrement = 0.05f;
-        rgba.setR( rgba.getGLR() + rIncrement );
+//        if (rgba.getGLR() > 1.0f) rIncrement = -0.05f;
+//        if (rgba.getGLR() < 0.0f) rIncrement = 0.05f;
+//        rgba.setR( rgba.getGLR() + rIncrement );
     }
 
 
