@@ -201,9 +201,9 @@ typedef _W64 int ptrdiff_t;
 #  define GLEWAPI extern
 #else
 #  ifdef GLEW_BUILD
-#    define GLEWAPI extern __declspec(dllexport)
+#    define GLEWAPI extern
 #  else
-#    define GLEWAPI extern __declspec(dllimport)
+#    define GLEWAPI extern
 #  endif
 #endif
 

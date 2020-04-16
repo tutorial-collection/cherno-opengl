@@ -1,4 +1,7 @@
-#define GLEW_BUILD
+#define GLEW_STATIC
+
+#include <IMGUI/imgui.h>
+#include <IMGUI/imgui_impl_glfw_gl3.h>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -13,7 +16,7 @@
 
 
 // Constants
-const int SCALE = 2;
+const int SCALE = 1;
 const GLuint WIDTH = 1080 * SCALE;
 const GLuint HEIGHT = 720 * SCALE;
 
@@ -102,19 +105,10 @@ int main() {
     // View matrix
     glm::mat4 viewMatrix{ glm::translate(glm::mat4{1.0f}, glm::vec3(100.0f, 0.0f, 0.0f)) };
 
-    // Model matrix
-    glm::mat4 modelMatrix{ glm::translate(glm::mat4{1.0f}, glm::vec3{200.0f, 200.0f, 0.0f}) };
-
-
-    // MVP matrix
-    // Multiply right to left, p <- v <- m
-    glm::mat4 mvpMatrix{projectionMatrix * viewMatrix * modelMatrix};
-
 
     Shader shader{"../res/shaders/Basic.shader"};
     shader.bind();
     shader.setUniform4f("u_Color", 0.2f, 0.3f, 0.8f, 1.0f);
-    shader.setUniformMat4f("u_MVP", mvpMatrix);
 
 
     Texture texture{"../res/textures/brick0.jpg"};
@@ -133,7 +127,15 @@ int main() {
 
     Renderer renderer{};
     float rIncrement = 0.05f;
-    unsigned int frame = 0;
+
+
+    // IM GUI
+    ImGui::CreateContext();
+    ImGui_ImplGlfwGL3_Init(window, true);
+    ImGui::StyleColorsDark();
+
+    // Translation
+    glm::vec3 modelTranslation{200, 200, 0};
 
 
     /* Loop until the user closes the window */
@@ -141,10 +143,29 @@ int main() {
         /* Render here */
         renderer.clear();
 
+        /* IM GUI Code */
+        ImGui_ImplGlfwGL3_NewFrame();
+        {
+            ImGui::SliderFloat3("Model Translate", &modelTranslation.x, 0, 100);
+        }
+
+
+        // Render
+        // Model matrix
+        glm::mat4 modelMatrix{ glm::translate(glm::mat4{1.0f}, modelTranslation) };
+        // MVP matrix
+        glm::mat4 mvpMatrix{projectionMatrix * viewMatrix * modelMatrix};
+
         shader.bind();
         shader.setUniform4f("u_Color", rgba.getGLR(), rgba.getGLG(), rgba.getGLB(), rgba.getGLA());
+        shader.setUniformMat4f("u_MVP", mvpMatrix);
 
         renderer.draw(vao, triangleIndexBuffer, shader);
+
+
+        // GUI RENDER
+        ImGui::Render();
+        ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 
 
         /* Swap front and back buffers */
@@ -158,14 +179,12 @@ int main() {
         if (rgba.getGLR() > 1.0f) rIncrement = -0.05f;
         if (rgba.getGLR() < 0.0f) rIncrement = 0.05f;
         rgba.setR( rgba.getGLR() + rIncrement );
-
-
-        // Frame counter
-        if (frame % 60 == 0) {
-            std::cout << "60 frames: " << frame / 60 << std::endl;
-        }
-        ++frame;
     }
+
+
+    // IM GUI Cleanup
+    ImGui_ImplGlfwGL3_Shutdown();
+    ImGui::DestroyContext();
 
     glfwTerminate();
     return 0;
