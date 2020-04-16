@@ -6,6 +6,7 @@
 
 #include "engine/Renderer.h"
 #include "utils/RGBA.h"
+#include "engine/Texture.h"
 
 
 // Constants
@@ -56,10 +57,10 @@ int main() {
 
     /* Initialize vertex buffer */
     float trianglePositions[]{
-        -0.5f, -0.5f, // Vertex 1
-        0.5f, -0.5f, // Vertex 2
-        0.5f, 0.5f, // Vertex 3
-        -0.5f, 0.5f, // Vertex 4
+        -0.5f, -0.5f, 0.0f, 0.0f, // Vertex 1
+        0.5f, -0.5f, 1.0f, 0.0f, // Vertex 2
+        0.5f, 0.5f, 1.0f, 1.0f, // Vertex 3
+        -0.5f, 0.5f, 0.0f, 1.0f // Vertex 4
     };
 
 
@@ -73,10 +74,16 @@ int main() {
     };
 
 
+    // BLENDING
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
+
+
     VertexArray vao{};
-    VertexBuffer triangleBuffer{trianglePositions, 4 * 2 * sizeof(float)};
+    VertexBuffer triangleBuffer{trianglePositions, 4 * 4 * sizeof(float)};
 
     VertexBufferLayout triangleLayout{};
+    triangleLayout.push<float>(2);
     triangleLayout.push<float>(2);
     vao.addBuffer(triangleBuffer, triangleLayout);
 
@@ -86,6 +93,10 @@ int main() {
     Shader shader{"../res/shaders/Basic.shader"};
     shader.bind();
     shader.setUniform4f("u_Color", 0.2f, 0.3f, 0.8f, 1.0f);
+
+    Texture texture{"../res/textures/brick0.jpg"};
+    texture.bind();
+    shader.setUniform1i("u_Texture", 0); // Match slot with 0
 
 
     // Unbind all

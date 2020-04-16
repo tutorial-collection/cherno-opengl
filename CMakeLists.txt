@@ -24,7 +24,7 @@ add_executable(
         src/engine/IndexBuffer.cpp src/engine/IndexBuffer.h
         src/engine/VertexArray.cpp src/engine/VertexArray.h
         src/engine/VertexBufferLayout.h
-        src/engine/Shader.cpp src/engine/Shader.h src/utils/RGBA.cpp src/utils/RGBA.h)
+        src/engine/Shader.cpp src/engine/Shader.h src/utils/RGBA.cpp src/utils/RGBA.h include/STB/stb_image.h include/STB/stb_image.cpp src/engine/Texture.cpp src/engine/Texture.h)
 
 # Target libraries
 # target_link_libraries(${PROJECT_NAME} ...)
