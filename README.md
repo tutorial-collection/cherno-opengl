@@ -20,3 +20,4 @@ The OpenGL series from The Cherno.
 1. [Writing a Basic Renderer in OpenGL](https://youtu.be/jjaTTRFXRAk)
 1. [Textures in OpenGL](https://youtu.be/n4k7ANAFsIQ)
 1. [Blending in OpenGL](https://youtu.be/o1_yJ60UIxs)
+1. [Maths in OpenGL](https://youtu.be/VuYnjsDOx60)
