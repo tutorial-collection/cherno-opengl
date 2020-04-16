@@ -97,14 +97,24 @@ int main() {
     // Projection matrix
     glm::mat4 projectionMatrix{glm::ortho(0.0f, (float)WIDTH, 0.0f, (float)HEIGHT, -1.0f, 1.0f)};
     glm::vec4 vertexPositions{100.0f, 100.0f, 0.0f, 1.0f};
+    // glm::vec4 result{projectionMatrix * vertexPositions};
 
-    glm::vec4 result{projectionMatrix * vertexPositions};
+    // View matrix
+    glm::mat4 viewMatrix{ glm::translate(glm::mat4{1.0f}, glm::vec3(100.0f, 0.0f, 0.0f)) };
+
+    // Model matrix
+    glm::mat4 modelMatrix{ glm::translate(glm::mat4{1.0f}, glm::vec3{200.0f, 200.0f, 0.0f}) };
+
+
+    // MVP matrix
+    // Multiply right to left, p <- v <- m
+    glm::mat4 mvpMatrix{projectionMatrix * viewMatrix * modelMatrix};
 
 
     Shader shader{"../res/shaders/Basic.shader"};
     shader.bind();
     shader.setUniform4f("u_Color", 0.2f, 0.3f, 0.8f, 1.0f);
-    shader.setUniformMat4f("u_MVP", projectionMatrix);
+    shader.setUniformMat4f("u_MVP", mvpMatrix);
 
 
     Texture texture{"../res/textures/brick0.jpg"};
