@@ -19,3 +19,4 @@ The OpenGL series from The Cherno.
 1. [Shader Abstraction in OpenGL](https://youtu.be/gDtHL6hy9R8)
 1. [Writing a Basic Renderer in OpenGL](https://youtu.be/jjaTTRFXRAk)
 1. [Textures in OpenGL](https://youtu.be/n4k7ANAFsIQ)
+1. [Blending in OpenGL](https://youtu.be/o1_yJ60UIxs)
