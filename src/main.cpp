@@ -2,6 +2,9 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <GLM/glm.hpp>
+#include <GLM/gtc/matrix_transform.hpp>
+
 #include <iostream>
 
 #include "engine/Renderer.h"
@@ -10,8 +13,9 @@
 
 
 // Constants
-const GLuint WIDTH = 800;
-const GLuint HEIGHT = 600;
+const int SCALE = 2;
+const GLuint WIDTH = 1080 * SCALE;
+const GLuint HEIGHT = 720 * SCALE;
 
 
 /**
@@ -90,9 +94,15 @@ int main() {
     IndexBuffer triangleIndexBuffer{indices, 6};
 
 
+    // Projection matrix
+    glm::mat4 projectionMatrix = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
+
+
     Shader shader{"../res/shaders/Basic.shader"};
     shader.bind();
     shader.setUniform4f("u_Color", 0.2f, 0.3f, 0.8f, 1.0f);
+    shader.setUniformMat4f("u_MVP", projectionMatrix);
+
 
     Texture texture{"../res/textures/brick0.jpg"};
     texture.bind();

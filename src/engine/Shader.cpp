@@ -23,7 +23,7 @@ int Shader::getUniformLocation(const std::string &name) {
     int location = glGetUniformLocation(this->m_rendererID, name.c_str());
 
     if (location == -1) {
-        std::cout << "@Shader.cpp: WARNING: Uniform " << name << " doesn't exist.";
+        std::cout << "@Shader.cpp: WARNING: Uniform " << name << " doesn't exist." << std::endl;
     }
 
     this->m_locationCache[name] = location;
@@ -141,4 +141,9 @@ void Shader::setUniform4f(const std::string &name, float v0, float v1, float v2,
 void Shader::setUniform1i(const std::string &name, int value) {
     int location = this->getUniformLocation(name);
     glUniform1i(location, value);
+}
+
+void Shader::setUniformMat4f(const std::string &name, glm::mat4 matrix) {
+    int location = this->getUniformLocation(name);
+    glUniformMatrix4fv(location, 1, false, &matrix[0][0]);
 }
