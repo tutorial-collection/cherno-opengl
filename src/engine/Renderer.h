@@ -13,6 +13,7 @@ public:
     static void enableDebugCallback();
     void draw(const VertexArray &vertexArray, const IndexBuffer &indexBuffer, const Shader &shader) const;
     void clear() const;
+    static GLubyte * getGLVersion();
 
 private:
     static void GLAPIENTRY debugCallbackMessage(GLenum source, GLenum type, GLuint id, GLenum severity,

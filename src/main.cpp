@@ -48,7 +48,7 @@ int main() {
     }
 
     /* Log the OpenGL version */
-    std::cout << glGetString(GL_VERSION) << std::endl;
+    std::cout << Renderer::getGLVersion() << std::endl;
 
     // Init error handling
     Renderer::enableDebugCallback();

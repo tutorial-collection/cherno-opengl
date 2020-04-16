@@ -80,3 +80,8 @@ void Renderer::draw(const VertexArray &vertexArray, const IndexBuffer &indexBuff
 void Renderer::clear() const {
     glClear(GL_COLOR_BUFFER_BIT);
 }
+
+
+GLubyte *Renderer::getGLVersion() {
+    return const_cast<GLubyte *>(glGetString(GL_VERSION));
+}
