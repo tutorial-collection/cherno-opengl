@@ -24,3 +24,4 @@ The OpenGL series from The Cherno.
 1. [Projection Matrices in OpenGL](https://youtu.be/xZs6K7VLM7A)
 1. [Model View Projection Matrices in OpenGL](https://youtu.be/x_Ph2cuEWrE)
 1. [ImGui in OpenGL](https://youtu.be/nVaQuNXueFw)
+1. [Rendering Multiple Objects in OpenGL](https://youtu.be/7D8lLbp9_rQ)
