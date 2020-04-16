@@ -61,10 +61,10 @@ int main() {
 
     /* Initialize vertex buffer */
     float trianglePositions[]{
-        -0.5f, -0.5f, 0.0f, 0.0f, // Vertex 1
-        0.5f, -0.5f, 1.0f, 0.0f, // Vertex 2
-        0.5f, 0.5f, 1.0f, 1.0f, // Vertex 3
-        -0.5f, 0.5f, 0.0f, 1.0f // Vertex 4
+        100.0f, 100.0f, 0.0f, 0.0f, // Vertex 1
+        500.0f, 100.0f, 1.0f, 0.0f, // Vertex 2
+        500.0f, 500.0f, 1.0f, 1.0f, // Vertex 3
+        100.0f, 500.0f, 0.0f, 1.0f // Vertex 4
     };
 
 
@@ -95,7 +95,10 @@ int main() {
 
 
     // Projection matrix
-    glm::mat4 projectionMatrix = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
+    glm::mat4 projectionMatrix{glm::ortho(0.0f, (float)WIDTH, 0.0f, (float)HEIGHT, -1.0f, 1.0f)};
+    glm::vec4 vertexPositions{100.0f, 100.0f, 0.0f, 1.0f};
+
+    glm::vec4 result{projectionMatrix * vertexPositions};
 
 
     Shader shader{"../res/shaders/Basic.shader"};
